@@ -1,0 +1,9 @@
+name: user_repository
+description: Dart package which manages the authentication domain.
+publish_to: none
+
+environment:
+  sdk: ^3.5.2
+dependencies:
+  equatable: ^2.0.0
+  uuid: ^3.0.0
