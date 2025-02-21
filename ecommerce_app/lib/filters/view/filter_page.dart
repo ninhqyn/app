@@ -1,26 +1,27 @@
+import 'package:ecommerce_app/favorites/bloc/favorites_bloc.dart';
 import 'package:ecommerce_app/shop/bloc/shop_bloc.dart';
 import 'package:ecommerce_app/shop/models/filter_model.dart';
-import 'package:ecommerce_app/shop/view/filters/bloc/filter_bloc.dart';
-import 'package:ecommerce_app/shop/view/filters/view/brand_screen.dart';
-import 'package:ecommerce_app/shop/view/filters/view/filter_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import '../../../models/brand.dart';
-class FilterPage extends StatelessWidget {
-  const FilterPage({super.key});
 
+import '../../config/routes.dart';
+import '../bloc/filter_bloc.dart';
+import 'brand_screen.dart';
+import 'filter_screen.dart';
+class FilterPage extends StatelessWidget {
+  const FilterPage({super.key, required this.page});
+  final String page;
   @override
   Widget build(BuildContext context) {
     //final ShopBloc shopBloc = ModalRoute.of(context)!.settings.arguments as ShopBloc;
-
     return BlocProvider<FilterBloc>(
         create: (context) =>
             FilterBloc(),
-      child: const Scaffold(
-        body: SafeArea(child: FilterView()
+      child: Scaffold(
+        body: const SafeArea(child: FilterView()
         ),
-        bottomNavigationBar: _BottomNavigator(),
+        bottomNavigationBar: _BottomNavigator(page: page,),
       ),
     );
   }
@@ -78,13 +79,13 @@ class _FilterViewState extends State<FilterView> {
 }
 
 class _BottomNavigator extends StatelessWidget {
-  const _BottomNavigator();
+  const _BottomNavigator({required this.page});
+  final String page;
 
   @override
   Widget build(BuildContext context) {
     var widthButton = MediaQuery.of(context).size.width / 2 - 24; // Adjusted padding
     var heightButton = 36.0;
-
     return Container(
       height: 80, // Reduced height
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -135,12 +136,23 @@ class _BottomNavigator extends StatelessWidget {
             ),
             onPressed: () {
              print('apply filter');
+             print(page);
              final filterState = context.read<FilterBloc>().state;
              final filterModel = filterState.filterModel;
-             if(filterModel != null){
-               context.read<ShopBloc>().add(FilterChanged(filterModel));
-             }else{
-               context.read<ShopBloc>().add(FilterChanged(const FilterModel()));
+             if(page == RoutesName.favoritesPages){
+               if(filterModel != null){
+                 context.read<FavoritesBloc>().add(FilterChangedFavorites(filterModel));
+               }else{
+                 context.read<FavoritesBloc>().add(FilterChangedFavorites(const FilterModel()));
+               }
+
+             }
+             if(page == RoutesName.shopPages){
+               if(filterModel != null){
+                 context.read<ShopBloc>().add(FilterChanged(filterModel));
+               }else{
+                 context.read<ShopBloc>().add(FilterChanged(const FilterModel()));
+               }
              }
 
              Navigator.pop(context);

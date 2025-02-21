@@ -4,8 +4,7 @@ import 'package:ecommerce_app/shop/models/filter_model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:meta/meta.dart';
-
-import '../../../models/brand.dart';
+import '../../shop/models/brand.dart';
 
 part 'filter_event.dart';
 part 'filter_state.dart';

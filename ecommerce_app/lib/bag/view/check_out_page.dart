@@ -1,4 +1,7 @@
+import 'package:ecommerce_app/bag/view/order_success_page.dart';
 import 'package:flutter/material.dart';
+
+import '../../config/routes.dart';
 
 class CheckOutPage extends StatelessWidget{
   const CheckOutPage({super.key});
@@ -38,12 +41,17 @@ class _MyNavigator extends StatelessWidget{
                   )
                 ]
             ),
-            child: const Center(
-              child: Text('SUBMIT ORDER',style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold
-              ),),
+            child: InkWell(
+              onTap: (){
+                Navigator.pushNamed(context, RoutesName.orderSuccessPage);
+              },
+              child: const Center(
+                child: Text('SUBMIT ORDER',style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold
+                ),),
+              ),
             ),
           ),
         ),
@@ -233,7 +241,7 @@ class _ShippingAddress extends StatelessWidget{
                   ),),
                   InkWell(
                     onTap: (){
-                      print('Change');
+                      Navigator.pushNamed(context, RoutesName.shippingAddressPage);
                     },
                     child: const Text('Change',style: TextStyle(
                         fontSize: 14,

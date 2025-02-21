@@ -4,34 +4,15 @@ class OrderDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: const Text(
-          'Order Details',
-          style: TextStyle(color: Colors.black),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.search, color: Colors.black),
-            onPressed: () {},
-          ),
-        ],
-        backgroundColor: Colors.white,
-        elevation: 0,
-      ),
-      body: ListView(
+    return
+      ListView(
         children: [
           _buildOrderHeader(),
           _buildProductsList(),
           _buildOrderInformation(),
           _buildButtons(),
         ],
-      ),
-    );
+      );
   }
 
   Widget _buildOrderHeader() {

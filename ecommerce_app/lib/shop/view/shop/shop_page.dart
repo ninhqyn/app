@@ -81,15 +81,22 @@ class _MyAppBar extends StatelessWidget {
               print('navigator');
               context.read<ShopBloc>().add(NavigateBackEvent());
             },
-            child: SvgPicture.asset(
-              'assets/images/back.svg',
-              width: 24,
-              height: 24,
+            child: BlocBuilder<ShopBloc, ShopState>(
+              builder: (context, state) {
+                if(state is CategoriesLoadedState){
+                  return Container();
+                }
+                return SvgPicture.asset(
+                  'assets/images/back.svg',
+                  width: 24,
+                  height: 24,
+                );
+              },
             ),
           ),
           BlocBuilder<ShopBloc, ShopState>(
             builder: (context, state) {
-              if(state is ProductLoadedState){
+              if (state is ProductLoadedState) {
                 return Container();
               }
               return const Text(
@@ -100,7 +107,6 @@ class _MyAppBar extends StatelessWidget {
                   fontSize: 18,
                 ),
               );
-
             },
           ),
           SvgPicture.asset(

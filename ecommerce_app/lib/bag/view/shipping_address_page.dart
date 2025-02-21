@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../config/routes.dart';
+
 class ShippingAddressPage extends StatelessWidget {
   const ShippingAddressPage({super.key});
 
@@ -10,21 +12,26 @@ class ShippingAddressPage extends StatelessWidget {
         title: const Text('Shipping Address'),
       ),
       body: const ShippingAddressView(),
-      floatingActionButton: Container(
-        width: 36,
-        margin: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: Colors.black,
-          shape: BoxShape.circle,
-          boxShadow: [
-            BoxShadow(
-              offset: const Offset(0, 4),
-              blurRadius: 4,
-              color: Colors.black.withOpacity(0.22)
-            )
-          ]
+      floatingActionButton: InkWell(
+        onTap: (){
+          Navigator.pushNamed(context, RoutesName.addShippingAddressPage);
+        },
+        child: Container(
+          width: 36,
+          margin: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: Colors.black,
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                offset: const Offset(0, 4),
+                blurRadius: 4,
+                color: Colors.black.withOpacity(0.22)
+              )
+            ]
+          ),
+          child: const Icon(Icons.add,color: Colors.white,),
         ),
-        child: const Icon(Icons.add,color: Colors.white,),
       ),
 
     );

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../models/brand.dart';
+import '../../shop/models/brand.dart';
 import '../bloc/filter_bloc.dart';
 class BrandScreen extends StatelessWidget {
   const BrandScreen({super.key});

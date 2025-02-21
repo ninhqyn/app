@@ -1,11 +1,10 @@
-
-import 'package:ecommerce_app/shop/bloc/shop_bloc.dart';
 import 'package:ecommerce_app/shop/models/category.dart';
 import 'package:ecommerce_app/shop/models/filter_model.dart';
-import 'package:ecommerce_app/shop/view/filters/bloc/filter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+
+import '../bloc/filter_bloc.dart';
 class FilterScreen extends StatefulWidget {
   const FilterScreen({super.key});
 

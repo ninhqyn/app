@@ -88,8 +88,8 @@ class HomePageView extends StatelessWidget {
 
   HomePageView({super.key});
  final List<Widget> _widgetOption = [
-   const ShopPage(),
    const HomePage(),
+   const ShopPage(),
    const BagPage(),
    const FavoritesPage(),
    const ProfilePage()

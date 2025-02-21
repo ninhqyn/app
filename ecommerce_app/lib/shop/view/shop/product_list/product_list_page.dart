@@ -1,3 +1,4 @@
+import 'package:ecommerce_app/config/routes.dart';
 import 'package:ecommerce_app/home/widgets/card_item.dart';
 import 'package:ecommerce_app/shop/bloc/shop_bloc.dart';
 import 'package:ecommerce_app/shop/view/shop/product_list/widgets/filter_control.dart';
@@ -63,7 +64,10 @@ class _ListProduct  extends StatelessWidget{
                           childAspectRatio: 0.75
                       ),
                       itemBuilder: (context, index) {
-                        return const ProductItemGridMode();
+                        return InkWell(onTap:(){
+                          onNavigatorDetailProduct(context,index);
+                        },
+                            child: const ProductItemGridMode());
                       },
                     ),
                   );
@@ -74,7 +78,9 @@ class _ListProduct  extends StatelessWidget{
               itemCount: 10,
               scrollDirection: Axis.vertical,
               itemBuilder: (context,index){
-                return const ProductItemListMode();
+                return InkWell(onTap:(){
+                  onNavigatorDetailProduct(context, index);
+                },child: const ProductItemListMode());
           }
           );
   },
@@ -82,6 +88,10 @@ class _ListProduct  extends StatelessWidget{
         )
     );
   }
+}
+
+void onNavigatorDetailProduct(BuildContext  context,int index) {
+  Navigator.pushNamed(context, RoutesName.productDetail,arguments: index);
 }
 
 

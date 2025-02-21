@@ -1,11 +1,11 @@
 
 import 'package:ecommerce_app/config/routes.dart';
 import 'package:ecommerce_app/shop/bloc/shop_bloc.dart';
-import 'package:ecommerce_app/shop/view/filters/view/filter_page.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter/material.dart';
+import '../../../../../filters/view/filter_page.dart';
 import 'modal_button.dart';
 
 class FilterControl extends StatelessWidget {
@@ -36,7 +36,7 @@ class FilterControl extends StatelessWidget {
                   builder: (context) {
                     return BlocProvider.value(
                       value: shopBloc,  // Truyền ShopBloc đã có sẵn
-                      child: const FilterPage(),
+                      child: const FilterPage(page: RoutesName.shopPages,),
                     );
                   },
                 ),
@@ -72,32 +72,43 @@ class FilterControl extends StatelessWidget {
               children: [
                 SvgPicture.asset('assets/images/swap.svg'),
                 const SizedBox(width: 5,),
-                BlocSelector<ShopBloc,ShopState,SortType>(
-                    selector: (state){
-                      final currentState = state as ProductLoadedState;
-                      return currentState.sortType;
-                    },
-                    builder:(context,sortType){
-                      late String text;
-                      switch(sortType){
-                        case SortType.highToLow:
-                          text = 'Price:Highest to low';
-                        case SortType.lowToHigh:
-                          text = 'Price:Lowest to high';
-                        case SortType.newest:
-                          text = 'Newest';
-                        case SortType.popular:
-                          text = 'Popular';
-                        case SortType.customerReview:
-                          text = 'Customer Review';
-                        default:
-                          text = "error";
-                      }
-                      return Text(text, style: const TextStyle(
-                          fontSize: 11
-                      ),);
+                BlocSelector<ShopBloc, ShopState, SortType>(
+                  selector: (state) {
+                    // Only cast to ProductLoadedState if the state is of this type
+                    if (state is ProductLoadedState) {
+                      return state.sortType;
+                    } else {
+                      return SortType.lowToHigh;  // Default value or handle error state
                     }
+                  },
+                  builder: (context, sortType) {
+                    late String text;
+                    switch (sortType) {
+                      case SortType.highToLow:
+                        text = 'Price: Highest to low';
+                        break;
+                      case SortType.lowToHigh:
+                        text = 'Price: Lowest to high';
+                        break;
+                      case SortType.newest:
+                        text = 'Newest';
+                        break;
+                      case SortType.popular:
+                        text = 'Popular';
+                        break;
+                      case SortType.customerReview:
+                        text = 'Customer Review';
+                        break;
+                      default:
+                        text = "error";
+                    }
+                    return Text(
+                      text,
+                      style: const TextStyle(fontSize: 11),
+                    );
+                  },
                 )
+
               ],
             ),
           ),

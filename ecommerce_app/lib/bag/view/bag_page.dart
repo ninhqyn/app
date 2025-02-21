@@ -2,6 +2,8 @@ import 'package:ecommerce_app/bag/widget/modal_promo_code.dart';
 import 'package:ecommerce_app/widgets/title_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+
+import '../../config/routes.dart';
 class BagPage extends StatelessWidget{
   const BagPage({super.key});
 
@@ -35,12 +37,17 @@ class BagPage extends StatelessWidget{
                         )
                       ]
                     ),
-                    child: const Center(
-                      child: Text('CHECK OUT',style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold
-                      ),),
+                    child: InkWell(
+                      onTap: (){
+                        Navigator.pushNamed(context, RoutesName.checkOutPage);
+                      },
+                      child: const Center(
+                        child: Text('CHECK OUT',style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold
+                        ),),
+                      ),
                     ),
                   ),
                 ),

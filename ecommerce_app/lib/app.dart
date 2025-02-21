@@ -8,7 +8,6 @@ import 'package:ecommerce_app/config/routes/routes_name.dart';
 import 'package:ecommerce_app/product/view/product_detail_page.dart';
 import 'package:ecommerce_app/profile/view/settings_page.dart';
 import 'package:ecommerce_app/rating/view/rating_page.dart';
-import 'package:ecommerce_app/shop/view/filters/view/filter_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:user_repository/user_repository.dart';

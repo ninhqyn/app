@@ -1,4 +1,7 @@
+import 'package:ecommerce_app/app.dart';
+import 'package:ecommerce_app/profile/bloc/profile_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 class OrderCard extends StatelessWidget {
   const OrderCard({super.key});
 
@@ -109,7 +112,9 @@ class OrderCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               OutlinedButton(
-                onPressed: () {},
+                onPressed: () {
+                  context.read<ProfileBloc>().add(NavigatorOrderDetail());
+                },
                 style: OutlinedButton.styleFrom(
                   side: const BorderSide(color: Colors.black),
                   shape: RoundedRectangleBorder(

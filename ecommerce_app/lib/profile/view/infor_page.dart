@@ -1,4 +1,7 @@
+import 'package:ecommerce_app/app.dart';
+import 'package:ecommerce_app/profile/bloc/profile_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class InfoPage extends StatelessWidget{
   const InfoPage({super.key});
@@ -53,7 +56,9 @@ class InfoPage extends StatelessWidget{
              _ItemProfile(
                title: 'My orders',
                subtitle: 'Already have 12 orders',
-               onTap: () {},
+               onTap: () {
+                 context.read<ProfileBloc>().add(NavigatorMyOrder());
+               },
              ),
              _ItemProfile(
                title: 'Shipping addresses',
@@ -78,7 +83,9 @@ class InfoPage extends StatelessWidget{
              _ItemProfile(
                title: 'Settings',
                subtitle: 'Notifications, password',
-               onTap: () {},
+               onTap: () {
+                 context.read<ProfileBloc>().add(NavigatorSetting());
+               },
              ),
            ],
          ),
