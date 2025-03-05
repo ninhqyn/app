@@ -1,7 +1,11 @@
 
+import 'package:ecommerce_app/product/bloc/product_detail_bloc.dart';
 import 'package:ecommerce_app/product/widget/modal_select_size.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+
+import 'modal_select_color.dart';
 class SelectorProperty extends StatelessWidget{
   const SelectorProperty({super.key});
   void showSizeSelector(BuildContext context) {
@@ -32,22 +36,54 @@ class SelectorProperty extends StatelessWidget{
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          InkWell(
-              onTap: (){
-                showModalBottomSheet(
-                    context: context,
-                    builder: (context){
-                      return const ModalSelectSize();
-                    });
-              },
-              child: const _SelectorButton(title:'Size')
+          BlocBuilder<ProductDetailBloc, ProductDetailState>(
+            builder: (context, state) {
+              if(state is LoadedProductState){
+                return InkWell(
+                    onTap: (){
+                      final productDetailBloc = context.read<ProductDetailBloc>();
+                      showModalBottomSheet(
+                          context: context,
+                          builder: (context){
+                            return BlocProvider.value(
+                                value: productDetailBloc,
+                                child: const ModalSelectSize());
+                          });
+                    },
+                    child: _SelectorButton(
+                        title:state.sizeSelected == null ? 'Size':'Size : ${state.sizeSelected!.name}'
+                    )
+                );
+              }
+              return Container();
+
+            },
           ),
           const SizedBox(width: 10,),
-          InkWell(
-              onTap:(){
-                print('on tab color');
-              },
-              child: const _SelectorButton(title:'Black')),
+          BlocBuilder<ProductDetailBloc, ProductDetailState>(
+            builder: (context, state) {
+              if(state is LoadedProductState){
+                return InkWell(
+                    onTap:(){
+                      final productDetailBloc = context.read<ProductDetailBloc>();
+                      showModalBottomSheet(
+                          context: context,
+                          builder: (context){
+                            return BlocProvider.value(
+                                value: productDetailBloc,
+                                child: const ModalSelectColor());
+                          });
+                    },
+                    child: _SelectorButton(
+                        title:state.colorSelected == null ? 'Color':state.colorSelected!.name));
+              }
+              return InkWell(
+                  onTap:(){
+                    print('on tab color');
+                  },
+                  child: const _SelectorButton(title:'Color abc'));
+            },
+          ),
           const SizedBox(width: 10,),
           const _FavoriteButton()
         ],

@@ -1,9 +1,14 @@
+import 'package:color_repository/color_repository.dart';
 import 'package:ecommerce_app/favorites/bloc/favorites_bloc.dart';
+import 'package:ecommerce_app/home/bloc/home_bloc.dart';
 import 'package:ecommerce_app/shop/bloc/shop_bloc.dart';
 import 'package:ecommerce_app/shop/models/filter_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:product_api/product_api.dart';
+import 'package:product_repository/product_repository.dart';
+import 'package:size_repository/size_repository.dart';
 
 import '../../config/routes.dart';
 import '../bloc/filter_bloc.dart';
@@ -14,16 +19,43 @@ class FilterPage extends StatelessWidget {
   final String page;
   @override
   Widget build(BuildContext context) {
-    //final ShopBloc shopBloc = ModalRoute.of(context)!.settings.arguments as ShopBloc;
-    return BlocProvider<FilterBloc>(
-        create: (context) =>
-            FilterBloc(),
-      child: Scaffold(
-        body: const SafeArea(child: FilterView()
-        ),
-        bottomNavigationBar: _BottomNavigator(page: page,),
-      ),
+    if(page == RoutesName.shopPages){
+      return BlocBuilder<ShopBloc, ShopState>(
+        builder: (context, state) {
+          if(state is ProductLoadedState){
+            return BlocProvider<FilterBloc>(
+              create: (context) =>
+              FilterBloc(
+                  context.read<ProductRepository>(),
+                  context.read<SizeRepository>(),
+                  context.read<ColorRepository>())..add(LoadedFilterScreen(state.filter)),
+              child: Scaffold(
+                body: const SafeArea(child: FilterView()
+                ),
+                bottomNavigationBar: _BottomNavigator(page: page,),
+              ),
+            );
+          }
+          return const Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+
+        },
+      );
+    }
+    return BlocBuilder<FavoritesBloc, FavoritesState>(
+      builder: (context, state) {
+        return const Scaffold(
+          body: Center(
+            child: CircularProgressIndicator(),
+          ),
+        );
+
+      },
     );
+
   }
 }
 
@@ -135,23 +167,15 @@ class _BottomNavigator extends StatelessWidget {
               ),
             ),
             onPressed: () {
-             print('apply filter');
-             print(page);
              final filterState = context.read<FilterBloc>().state;
              final filterModel = filterState.filterModel;
-             if(page == RoutesName.favoritesPages){
-               if(filterModel != null){
-                 context.read<FavoritesBloc>().add(FilterChangedFavorites(filterModel));
-               }else{
-                 context.read<FavoritesBloc>().add(FilterChangedFavorites(const FilterModel()));
-               }
-
-             }
              if(page == RoutesName.shopPages){
                if(filterModel != null){
                  context.read<ShopBloc>().add(FilterChanged(filterModel));
+                 print('filter model shop');
                }else{
                  context.read<ShopBloc>().add(FilterChanged(const FilterModel()));
+                 print('filter model shop null');
                }
              }
 

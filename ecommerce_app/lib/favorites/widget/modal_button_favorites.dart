@@ -1,4 +1,5 @@
 import 'package:ecommerce_app/app.dart';
+import 'package:ecommerce_app/favorites/bloc/favorites_bloc.dart';
 import 'package:ecommerce_app/shop/bloc/shop_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,9 +22,9 @@ class _ModalButtonFavoritesState extends State<ModalButtonFavorites> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ShopBloc, ShopState>(
+    return BlocBuilder<FavoritesBloc, FavoritesState>(
       builder: (context, state) {
-        if (state is ProductLoadedState) {
+        if (state is FavoritesInitial) {
           // Cập nhật selectedIndex dựa trên sortType hiện tại
           _selectedIndex = switch(state.sortType) {
             SortType.popular => 0,
@@ -87,7 +88,7 @@ class _ModalButtonFavoritesState extends State<ModalButtonFavorites> {
           _ => SortType.popular,
         };
 
-        context.read<ShopBloc>().add(SortChanged(newSortType));
+        context.read<FavoritesBloc>().add(FavoriteSortChanged(newSortType));
         Navigator.pop(context);
       },
       child: Container(

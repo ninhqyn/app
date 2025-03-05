@@ -22,27 +22,27 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   Future<void> _onRequested(
       AuthenticationRequested event,
       Emitter<AuthenticationState> emit,
-      ) {
-    return emit.onEach(
-      _authenticationRepository.status,
-      onData: (status) async {
-        switch (status) {
-          case AuthenticationStatus.unauthenticated:
-            return emit(const AuthenticationState.unauthenticated());
-          case AuthenticationStatus.authenticated:
-            final user = await _tryGetUser();
-            return emit(
-              user != null
-                  ? AuthenticationState.authenticated(user)
-                  : const AuthenticationState.unauthenticated(),
-            );
-          case AuthenticationStatus.unknown:
-            return emit(const AuthenticationState.unknown());
-        }
-      },
-      onError: addError,
-    );
+      ) async {
+    await Future.delayed(const Duration(seconds: 2));
+    print('check auth');
+    final status =await _authenticationRepository.checkAuthStatus();
+
+    // Emit states based on the status
+    switch (status) {
+      case AuthenticationStatus.unauthenticated:
+        return emit(const AuthenticationState.unauthenticated());
+      case AuthenticationStatus.authenticated:
+        final user = await _tryGetUser();
+        return emit(
+          user != null
+              ? AuthenticationState.authenticated(user)
+              : const AuthenticationState.unauthenticated(),
+        );
+      case AuthenticationStatus.unknown:
+        return emit(const AuthenticationState.unknown());
+    }
   }
+
 
   Future<User?> _tryGetUser() async {
     try {
@@ -52,7 +52,9 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       return null;
     }
   }
-  void _onLogout(AuthenticationLogout event,Emitter<AuthenticationState> emit){
+  Future<void> _onLogout(AuthenticationLogout event,Emitter<AuthenticationState> emit) async{
+    await _authenticationRepository.deleteToken();
+    emit(const AuthenticationState.unauthenticated());
 
   }
 }

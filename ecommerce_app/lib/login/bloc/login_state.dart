@@ -11,6 +11,7 @@ class  LoginState  extends Equatable{
   final String passwordError;
   final bool obscurePassword;
   final bool emailTouched;
+  final String errorMessage;
   const LoginState(
       {
         this.email = '',
@@ -20,7 +21,8 @@ class  LoginState  extends Equatable{
         this.emailError = '',
         this.passwordError ='',
         this.emailTouched = false,
-        this.obscurePassword = true
+        this.obscurePassword = true,
+        this.errorMessage =''
 
       });
 
@@ -33,6 +35,7 @@ class  LoginState  extends Equatable{
     String? emailError,
     String? passwordError,
     bool? obscurePassword,
+    String? errorMessage,
     bool? emailTouched
   }) {
     return  LoginState(
@@ -43,12 +46,13 @@ class  LoginState  extends Equatable{
       emailError: emailError ?? this.emailError,
       passwordError: passwordError ?? this.passwordError,
       obscurePassword: obscurePassword ?? this.obscurePassword,
-      emailTouched:  emailTouched ?? this.emailTouched
+      emailTouched:  emailTouched ?? this.emailTouched,
+      errorMessage: errorMessage ?? this.errorMessage
     );
   }
 
   @override
-  List<Object?> get props => [email, password, status,obscurePassword,emailError,passwordError];
+  List<Object?> get props => [email, password,errorMessage, status,obscurePassword,emailError,passwordError];
 }
 class SignUpState extends LoginState{
   @override

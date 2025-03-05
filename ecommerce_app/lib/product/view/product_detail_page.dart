@@ -1,14 +1,30 @@
+import 'package:ecommerce_app/home/bloc/home_bloc.dart';
 import 'package:ecommerce_app/home/widgets/card_item.dart';
+import 'package:ecommerce_app/product/bloc/product_detail_bloc.dart';
 import 'package:ecommerce_app/product/widget/button_more.dart';
 import 'package:ecommerce_app/product/widget/card_title.dart';
 import 'package:ecommerce_app/product/widget/image_product.dart';
 import 'package:ecommerce_app/product/widget/selector_property.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:product_api/product_api.dart';
+import 'package:product_repository/product_repository.dart';
 
+import '../widget/modal_add_to_cart.dart';
 import '../widget/property_product.dart';
-class ProductDetailPage extends StatelessWidget{
-  const ProductDetailPage({super.key});
+class ProductDetailPage extends StatefulWidget{
+  const ProductDetailPage({super.key, required this.productId});
+ final int productId;
+  @override
+  State<ProductDetailPage> createState() => _ProductDetailPageState();
+}
 
+class _ProductDetailPageState extends State<ProductDetailPage> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<ProductDetailBloc>().add(FetchedProduct(widget.productId));
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,7 +37,6 @@ class ProductDetailPage extends StatelessWidget{
       bottomNavigationBar: _BottomNavigator(),
     );
   }
-
 }
 
 class _BottomNavigator  extends StatelessWidget{
@@ -42,24 +57,45 @@ class _BottomNavigator  extends StatelessWidget{
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: SafeArea(
         child: Center(
-          child: ElevatedButton(
-            onPressed: () {},
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-              foregroundColor: Colors.white,
-              minimumSize: const Size(double.infinity, 50),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(25),
-              ),
-              elevation: 0,
-            ),
-            child: const Text(
-              'ADD TO CART',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
+          child: BlocBuilder<ProductDetailBloc,ProductDetailState >(
+            builder: (context, state) {
+              if(state is LoadedProductState){
+                return ElevatedButton(
+                  onPressed:  (){
+                    final productDetailBloc = context.read<ProductDetailBloc>();
+                    showModalBottomSheet(
+                        context: context,
+                        builder: (context){
+                          return BlocProvider.value(
+                              value: productDetailBloc,
+                              child: ModalAddToCart(
+                                productId:state.productModel.product.productId ,
+                                productName:state.productModel.product.name
+                              ));
+                        });
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    foregroundColor: Colors.white,
+                    minimumSize: const Size(double.infinity, 50),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                    elevation: 0,
+                  ),
+                  child: const Text(
+                    'ADD TO CART',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                );
+              }
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            },
           ),
         ),
       ),
@@ -70,7 +106,6 @@ class _BottomNavigator  extends StatelessWidget{
 
 class ProductDetailView  extends StatelessWidget{
   const ProductDetailView({super.key});
-
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -82,20 +117,26 @@ class ProductDetailView  extends StatelessWidget{
           const SizedBox(height: 20,),
           const SelectorProperty(),
           const SizedBox(height: 30,),
-          const PropertyProduct(),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 15),
+            child: PropertyProduct(),
+          ),
           const SizedBox(height: 10,),
           const ButtonMore(title: 'Shipping info'),
           const ButtonMore(title: 'Support'),
           const SizedBox(height: 10,),
-          const CardTitle(
-              titleLeft: Text('You can also like this',style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold),
-              ),
-              titleRight: Text('12 items',style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 11
-              ),)),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 15),
+            child: CardTitle(
+                titleLeft: Text('You can also like this',style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold),
+                ),
+                titleRight: Text('12 items',style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 11
+                ),)),
+          ),
           _ListItem ()
         ],
       ),
@@ -112,10 +153,12 @@ class _ListItem extends StatelessWidget{
             shrinkWrap: true,
             scrollDirection: Axis.horizontal,
             itemBuilder: (context,index){
-              return const CardItem(textTag: Text('-20%',
-                style: TextStyle(
-                    color: Colors.white
-                ),), colorTag: Colors.red);
+              // return  CardItem(
+              //     textTag: Text('-20%',
+              //   style: TextStyle(
+              //       color: Colors.white
+              //
+              return Text('abc');
             })
     );
   }}

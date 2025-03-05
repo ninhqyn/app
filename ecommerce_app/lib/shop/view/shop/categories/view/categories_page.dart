@@ -1,11 +1,8 @@
 
 import 'package:ecommerce_app/shop/bloc/shop_bloc.dart';
-import 'package:ecommerce_app/shop/view/shop/categories/view/women/view/women_page.dart';
+import 'package:ecommerce_app/shop/view/shop/categories/view/list_category.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
-import 'children/view/children_page.dart';
-import 'man/view/man_page.dart';
 
 class CategoriesPage extends StatelessWidget {
   const CategoriesPage({super.key});
@@ -22,11 +19,11 @@ class ShopPageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> widgetOption = [
-      const WomenPage(),
-      const ManPage(),
-      const ChildrenPage()
-    ];
+    // List<Widget> widgetOption = [
+    //   const WomenPage(),
+    //   const ManPage(),
+    //   const ChildrenPage()
+    // ];
 
     return Column(
       children: [
@@ -37,7 +34,7 @@ class ShopPageView extends StatelessWidget {
             builder: (context, state) {
               if (state is CategoriesLoadedState) {
                 return SingleChildScrollView(
-                  child: widgetOption[state.tabIndex],
+                  child: ListCategory(items: state.categories),
                 );
               }
               return const Center(child: CircularProgressIndicator());
@@ -58,8 +55,8 @@ class ProductTabs extends StatefulWidget {
 }
 
 class _ProductTabsState extends State<ProductTabs> {
-  void handleSelectedTab(int index) {
-    context.read<ShopBloc>().add(TabChanged(index));
+  void handleSelectedTab(int index,int productId) {
+    context.read<ShopBloc>().add(TabChanged(index,productId));
   }
 
   @override
@@ -68,15 +65,23 @@ class _ProductTabsState extends State<ProductTabs> {
       builder: (context, state) {
         if (state is CategoriesLoadedState) {
           return Row(
-            children: [
-              Expanded(
+            children: List.generate(state.categoriesParent.length, (index) {
+              return Expanded(
                 child: InkWell(
-                  onTap: () => handleSelectedTab(0),
+                  onTap: () => handleSelectedTab(index,state.categoriesParent[index].categoryId),
                   child: Column(
                     children: [
-                      const Text('Women'),
+                      Text(
+                        state.categoriesParent[index].name,
+                        style: state.tabIndex == index ? const TextStyle(
+                        fontWeight: FontWeight.bold,
+                          fontSize: 16
+                      ):const TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16
+                        ),),
                       const SizedBox(height: 8),
-                      state.tabIndex == 0
+                      state.tabIndex == index
                           ? LinearProgressIndicator(
                         color: Colors.red,
                         value: 1.0,
@@ -87,61 +92,15 @@ class _ProductTabsState extends State<ProductTabs> {
                         value: 0.0,
                         backgroundColor: Colors.transparent,
                         minHeight: 4,
-                      )
+                      ),
                     ],
                   ),
                 ),
-              ),
-              Expanded(
-                child: InkWell(
-                  onTap: () => handleSelectedTab(1),
-                  child: Column(
-                    children: [
-                      const Text('Men'),
-                      const SizedBox(height: 8),
-                      state.tabIndex == 1
-                          ? LinearProgressIndicator(
-                        color: Colors.red,
-                        value: 1.0,
-                        backgroundColor: Colors.grey[200],
-                        minHeight: 4,
-                      )
-                          : const LinearProgressIndicator(
-                        value: 0.0,
-                        backgroundColor: Colors.transparent,
-                        minHeight: 4,
-                      )
-                    ],
-                  ),
-                ),
-              ),
-              Expanded(
-                child: InkWell(
-                  onTap: () => handleSelectedTab(2),
-                  child: Column(
-                    children: [
-                      const Text('Children'),
-                      const SizedBox(height: 8),
-                      state.tabIndex == 2
-                          ? LinearProgressIndicator(
-                        color: Colors.red,
-                        value: 1.0,
-                        backgroundColor: Colors.grey[200],
-                        minHeight: 4,
-                      )
-                          : const LinearProgressIndicator(
-                        value: 0.0,
-                        backgroundColor: Colors.transparent,
-                        minHeight: 4,
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            ],
+              );
+            }),
           );
         }
-        return const SizedBox(); // Hoặc một widget loading khác
+        return const SizedBox(); // Or some other loading widget
       },
     );
   }

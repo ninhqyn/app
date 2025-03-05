@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 class RatingPage extends StatelessWidget{
-  const RatingPage({super.key});
-
+  const RatingPage({super.key, required this.productId});
+  final int productId;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Rating and reviews'),
+        title: const Center(child: Text('Rating and reviews',style: TextStyle(
+          fontWeight: FontWeight.bold
+        ),)),
       ),
       body: const RatingView(),
       floatingActionButton: ElevatedButton(
@@ -44,7 +46,7 @@ class RatingView extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Rating&Reviews',style: TextStyle(
+          const Text(' Rating&Reviews',style: TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.bold,
             fontSize: 34

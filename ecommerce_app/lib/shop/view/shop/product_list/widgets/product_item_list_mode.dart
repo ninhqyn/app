@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-class ProductItemListMode extends StatelessWidget{
-  const ProductItemListMode({super.key});
 
+import '../../../../models/product_model.dart';
+class ProductItemListMode extends StatelessWidget{
+  const ProductItemListMode({super.key, required this.productModel});
+  final ProductModel productModel;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -30,23 +32,31 @@ class ProductItemListMode extends StatelessWidget{
                     topLeft: Radius.circular(10),
                     bottomLeft: Radius.circular(10)
                 ),
-                child: Image.asset(
-                  'assets/images/image1.png',
-                  width: 1/3 * MediaQuery.of(context).size.width,
-                  height: double.infinity,
-                  fit: BoxFit.fill,
-                ),
-              ),
+                  child: Image.network(
+                      productModel.productImages.isNotEmpty ?
+                      productModel.productImages[0].imageUrl : '', // Đảm bảo có URL ảnh
+                      width: 1 / 3 * MediaQuery.of(context).size.width,
+                      height: double.infinity,
+                      fit: BoxFit.fill,
+                      errorBuilder: (context, error, stackTrace) {
+                        // Khi không thể tải ảnh từ network, sẽ hiển thị ảnh từ assets
+                        return Image.asset(
+                          'assets/images/image5.png', // Ảnh mặc định trong assets
+                          width: 1 / 3 * MediaQuery.of(context).size.width,
+                          height: double.infinity,
+                          fit: BoxFit.cover,
+                        );
+                      })),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('Pullover',style: TextStyle(
+                    Text(productModel.product.name,style: const TextStyle(
                         fontWeight: FontWeight.bold
                     ),),
-                    const Text('Mango',style: TextStyle(
+                    Text(productModel.product.brand,style: const TextStyle(
                         color:Colors.grey
                     ),),
                     Row(
@@ -59,7 +69,7 @@ class ProductItemListMode extends StatelessWidget{
                         ),
                       ),
                     ),
-                    const Text('51\$',style:TextStyle(
+                    Text('${productModel.product.basePrice} vnd',style:const TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.bold
                     ),)

@@ -21,17 +21,35 @@ final class Info extends ProfileState{
 
 }
 final class MyOrder extends ProfileState{
+  final List<Order> orders;
+  final int statusId;
+  MyOrder({
+    this.orders = const<Order>[],
+    this.statusId = 1
+});
+  MyOrder copyWith({
+    List<Order>? orders,
+    int? statusId,
+}){
+    return MyOrder(
+      orders: orders ?? this.orders,
+      statusId: statusId ?? this.statusId
+    );
+  }
   @override
-  // TODO: implement props
-  List<Object?> get props => [];
+  List<Object?> get props => [orders,statusId];
 }
 final class Setting extends ProfileState{
   @override
   // TODO: implement props
   List<Object?> get props => [];
 }
-final class OrderDetail extends ProfileState{
+final class OrderDetailState extends ProfileState{
+  final Order order;
+
+  OrderDetailState(this.order);
+
   @override
   // TODO: implement props
-  List<Object?> get props => [];
+  List<Object?> get props => [order];
 }

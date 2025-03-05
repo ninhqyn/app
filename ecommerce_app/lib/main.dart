@@ -1,10 +1,11 @@
 import 'package:ecommerce_app/login/view/login_page.dart';
 import 'package:flutter/material.dart';
-
 import 'app.dart';
-
-void main() {
-  runApp(const App());
+import 'package:shared_preferences/shared_preferences.dart';
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  final sf = await SharedPreferences.getInstance();
+  runApp( App(sharedPreferences: sf));
 }
 
 

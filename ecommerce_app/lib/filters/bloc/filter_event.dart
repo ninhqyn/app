@@ -2,7 +2,15 @@ part of 'filter_bloc.dart';
 
 @immutable
 sealed class FilterEvent {}
-class NavigatorBrand extends FilterEvent{}
+class LoadedFilterScreen extends FilterEvent{
+  final FilterModel? filterModel;
+
+  LoadedFilterScreen(this.filterModel);
+}
+class NavigatorBrand extends FilterEvent{
+
+
+}
 class NavigatorBack extends FilterEvent{}
 final class SelectPrice extends FilterEvent{
   final int startRange;
@@ -22,13 +30,13 @@ class DeselectBrand extends FilterEvent {
   DeselectBrand(this.brand);
 }
 class SelectColor extends FilterEvent {
-  final Color color;
+  final ColorProduct color;
 
   SelectColor(this.color);
 }
 
 class DeselectColor extends FilterEvent {
-  final Color color;
+  final ColorProduct color;
 
   DeselectColor(this.color);
 }

@@ -44,7 +44,9 @@ class _FilterScreenState extends State<FilterScreen> {
               height: 160,
               color: Colors.white,
               padding: const EdgeInsets.all(20),
-              child:  const CategorySelector(),
+              child:  Center(
+                child: Text('category'),
+              ),
             ),
             const Text('Brand'),
             InkWell(
@@ -114,154 +116,84 @@ class _FilterScreenState extends State<FilterScreen> {
 
   }
 }
-class CategorySelector extends StatelessWidget {
-  const CategorySelector({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    List<Category> categories =[
-      Category(1, 'ALL'),
-      Category(2, 'categories 2'),
-      Category(3, 'categories 3'),
-      Category(4, 'categories 4'),
-      Category(5, 'categories 5'),
-      Category(6, 'categories 6'),
-    ];
-    return  GridView.builder(
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3, // 3 cột
-          crossAxisSpacing: 10, // Khoảng cách giữa các cột
-          mainAxisSpacing: 10, // Khoảng cách giữa các hàng
-          childAspectRatio: 3/1
-      ),
-      itemCount: categories.length, // Số lượng item trong Grid
-      itemBuilder: (context, index) {
-        return BlocBuilder<FilterBloc, FilterState>(
-  builder: (context, state) {
-    final isSelect = state.filterModel?.category?.id== categories[index].id;
-    return InkWell(
-          onTap: (){
-            context.read<FilterBloc>().add(SelectCategory(categories[index]));
-          },
-          child: Container(
-            decoration: BoxDecoration(
-                color: isSelect ? Colors.red :Colors.white,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(
-                color: isSelect ? Colors.transparent : Colors.grey
-                )
-            ),
-            child: Center(
-              child: Text(
-                categories[index].name,
-                style: TextStyle(color: isSelect ?Colors.white : Colors.black),
-              ),
-            ),
-          ),
-        );
-  },
-);
-      },
-    );
-  }
-}
 class SizeSelector extends StatelessWidget{
   const SizeSelector({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final List<SizeProduct> sizes = [
-     SizeProduct.M,SizeProduct.S,SizeProduct.L,
-      SizeProduct.xL,SizeProduct.xxL
-    ];
-    return ListView.separated(
-      itemCount: sizes.length,
-      scrollDirection: Axis.horizontal,
-      itemBuilder: (context , index){
-        late String size;
-        switch(sizes[index]){
-          case SizeProduct.L:
-            size = 'L';
-          case SizeProduct.M:
-            size = 'M';
-          case SizeProduct.S:
-            size = 'S';
-          case SizeProduct.xL:
-            size = 'XL';
-          case SizeProduct.xxL:
-            size = 'XXL';
-          default:
-            size = 'unKnow';
-        }
-        return BlocBuilder<FilterBloc, FilterState>(
+    return BlocBuilder<FilterBloc, FilterState>(
       builder: (context, state) {
-        final isSelected =
-            state.filterModel?.sizes?.contains(sizes[index]) ?? false;
-    return InkWell(
-          onTap: (){
-            if (isSelected) {
-              context.read<FilterBloc>().add(DeselectSize(sizes[index]));
-            } else {
-              context.read<FilterBloc>().add(SelectSize(sizes[index]));
-            }
-          },
-          child: Center(
-            child: Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                color: isSelected ?Colors.red:Colors.white,
-                shape: BoxShape.rectangle,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(
-                  color: Colors.grey,
-                )
-            ),
-            padding: const EdgeInsets.all(4),
-            child: Center(
-              child: Text(size,style:  TextStyle(
-                  fontSize: 14,
-                color: isSelected ? Colors.white : Colors.black
-              ),),
-            )
+        return ListView.separated(
+          itemCount: state.sizes.length,
+          scrollDirection: Axis.horizontal,
+          itemBuilder: (context , index){
+            final isSelected =
+                state.filterModel?.sizes?.contains(state.sizes[index]) ?? false;
+            return InkWell(
+                onTap: (){
+                  if (isSelected) {
+                    context.read<FilterBloc>().add(DeselectSize(state.sizes[index]));
+                  } else {
+                    context.read<FilterBloc>().add(SelectSize(state.sizes[index]));
+                  }
+                },
+                child: Center(
+                  child: Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                          color: isSelected ?Colors.red:Colors.white,
+                          shape: BoxShape.rectangle,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: Colors.grey,
+                          )
+                      ),
+                      padding: const EdgeInsets.all(4),
+                      child: Center(
+                        child: Text(state.sizes[index].name,style:  TextStyle(
+                            fontSize: 14,
+                            color: isSelected ? Colors.white : Colors.black
+                        ),),
+                      )
 
-                        ),
-          ),
-        );
-  },
-);
-      }, separatorBuilder: (BuildContext context, int index) {
-      return const SizedBox(width: 20,);
-    },);
+                  ),
+
+                )
+            );
+          }, separatorBuilder: (BuildContext context, int index) {
+          return const SizedBox(width: 20,);
+        },);
+      },
+    );
   }
 
 }
 class ColorSelector extends StatelessWidget {
-  ColorSelector({super.key});
-  final List<Color> colors = [
-    Colors.black,
-    Colors.white,
-    Colors.red,
-    Colors.grey[400]!,
-    const Color(0xFFDEB887),
-    //Colors.navy,
-  ];
+  const ColorSelector({super.key});
 
+  Color hexToColor(String hex) {
+    // Loại bỏ ký tự '#' nếu có
+    hex = hex.replaceAll('#', '');
+    // Kiểm tra và chuyển chuỗi hex thành một đối tượng Color
+    return Color(int.parse('0xFF' + hex)); // '0xFF' là mã alpha cho màu không trong suốt
+  }
   @override
   Widget build(BuildContext context) {
+    return BlocBuilder<FilterBloc, FilterState>(
+  builder: (context, state) {
     return ListView.separated(
-      itemCount: colors.length,
+      itemCount: state.colors.length,
       scrollDirection: Axis.horizontal,
       itemBuilder: (context , index){
-        return BlocBuilder<FilterBloc, FilterState>(
-  builder: (context, state) {
-    final isSelect = state.filterModel?.colors?.contains(colors[index]) ?? false;
+    final isSelect = state.filterModel?.colors?.contains(state.colors[index]) ?? false;
     return InkWell(
       onTap: (){
         if(isSelect){
-          context.read<FilterBloc>().add(DeselectColor(colors[index]));
+          context.read<FilterBloc>().add(DeselectColor(state.colors[index]));
         }else{
-          context.read<FilterBloc>().add(SelectColor(colors[index]));
+          context.read<FilterBloc>().add(SelectColor(state.colors[index]));
         }
       },
           child: Container(
@@ -277,7 +209,7 @@ class ColorSelector extends StatelessWidget {
             padding: const EdgeInsets.all(4),
             child: Container(
               decoration: BoxDecoration(
-                  color: colors[index],
+                  color: hexToColor(state.colors[index].colorCode),
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
@@ -289,10 +221,10 @@ class ColorSelector extends StatelessWidget {
             ),
           ),
         );
-  },
-);
       }, separatorBuilder: (BuildContext context, int index) {
       return const SizedBox(width: 20,);
     },);
+  },
+);
   }
 }

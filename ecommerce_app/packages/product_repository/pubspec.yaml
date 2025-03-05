@@ -1,0 +1,13 @@
+name: product_repository
+description: Dart package which manages the product
+publish_to: none
+
+environment:
+  sdk: ^3.5.2
+dependencies:
+  equatable: ^2.0.0
+  uuid: ^3.0.0
+  http: ^1.3.0
+  json_annotation: ^4.6.0
+  product_api:
+    path: ../product_api

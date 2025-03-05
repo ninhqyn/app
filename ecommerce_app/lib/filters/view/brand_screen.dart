@@ -1,20 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../shop/models/brand.dart';
+import 'package:product_api/product_api.dart';
 import '../bloc/filter_bloc.dart';
 class BrandScreen extends StatelessWidget {
   const BrandScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final List<Brand> list = [
-      Brand(1, 'brand a'),
-      Brand(2, 'brand b'),
-      Brand(3, 'brand c'),
-      Brand(4, 'brand d'),
-      Brand(5, 'brand e'),
-      Brand(6, 'brand f'),
-    ];
+
 
     return Container(
       color: Colors.grey.withOpacity(0.1),
@@ -52,13 +45,13 @@ class BrandScreen extends StatelessWidget {
               child: BlocBuilder<FilterBloc, FilterState>(
                 builder: (context, state) {
                   return ListView.builder(
-                    itemCount: list.length,
+                    itemCount: state.brands.length,
                     itemBuilder: (context, index) {
                       final isSelected =
-                          state.filterModel?.brands?.contains(list[index]) ??
+                          state.filterModel?.brands?.contains(state.brands[index]) ??
                               false;
                       return _ItemBrand(
-                        brand: list[index],
+                        brand: state.brands[index],
                         isSelected: isSelected,
                       );
                     },
@@ -86,7 +79,7 @@ class _ItemBrand extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            brand.name,
+            brand.brand,
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w200,

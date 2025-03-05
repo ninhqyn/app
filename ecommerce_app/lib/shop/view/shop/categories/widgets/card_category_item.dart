@@ -1,17 +1,17 @@
+import 'package:category_repository/category_repository.dart';
 import 'package:ecommerce_app/app.dart';
 import 'package:ecommerce_app/shop/bloc/shop_bloc.dart';
-import 'package:ecommerce_app/shop/models/category.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CardCategoryItemItem extends StatelessWidget{
-  const CardCategoryItemItem({super.key});
-
+  const CardCategoryItemItem({super.key, required this.category});
+  final Category category;
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: (){
-       context.read<ShopBloc>().add(SelectCategoriesEvent('11'));
+       context.read<ShopBloc>().add(SelectCategoriesEvent(category.categoryId));
       },
       child: Container(
         height: 100,
@@ -31,11 +31,11 @@ class CardCategoryItemItem extends StatelessWidget{
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Padding(
-                padding: EdgeInsets.all(20.0),
+              Padding(
+                padding: const EdgeInsets.all(20.0),
                 child: Text(
-                  'New',
-                  style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18),
+                  category.name,
+                  style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -44,8 +44,8 @@ class CardCategoryItemItem extends StatelessWidget{
                   topRight: Radius.circular(8),
                   bottomRight: Radius.circular(8),
                 ),
-                child: Image.asset(
-                  'assets/images/image1.png',
+                child: Image.network(
+                 category.image.toString(),
                   width: MediaQuery.of(context).size.width/2,
                   fit: BoxFit.cover,
                 ),

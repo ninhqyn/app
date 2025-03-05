@@ -2,9 +2,10 @@ import 'package:ecommerce_app/app.dart';
 import 'package:ecommerce_app/profile/bloc/profile_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:order_repository/order_repository.dart';
 class OrderCard extends StatelessWidget {
-  const OrderCard({super.key});
-
+  const OrderCard({super.key, required this.item});
+  final Order item;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -27,15 +28,15 @@ class OrderCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
-                'Order №1947034',
-                style: TextStyle(
+               Text(
+                item.orderCode,
+                style: const TextStyle(
                   fontWeight: FontWeight.w500,
                   fontSize: 16,
                 ),
               ),
               Text(
-                '05-12-2019',
+                item.createdAt.toString(),
                 style: TextStyle(
                   color: Colors.grey[600],
                   fontSize: 14,
@@ -77,9 +78,9 @@ class OrderCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 8),
-                  const Text(
-                    '3',
-                    style: TextStyle(
+                  Text(
+                    item.orderDetails.length.toString(),
+                    style: const TextStyle(
                       fontWeight: FontWeight.w500,
                       fontSize: 14,
                     ),
@@ -96,9 +97,9 @@ class OrderCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 8),
-                  const Text(
-                    '112\$',
-                    style: TextStyle(
+                   Text(
+                    item.totalAmount.toString(),
+                    style: const TextStyle(
                       fontWeight: FontWeight.w500,
                       fontSize: 14,
                     ),
@@ -113,7 +114,7 @@ class OrderCard extends StatelessWidget {
             children: [
               OutlinedButton(
                 onPressed: () {
-                  context.read<ProfileBloc>().add(NavigatorOrderDetail());
+                  context.read<ProfileBloc>().add(NavigatorOrderDetail(item));
                 },
                 style: OutlinedButton.styleFrom(
                   side: const BorderSide(color: Colors.black),

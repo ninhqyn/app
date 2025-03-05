@@ -1,0 +1,9 @@
+name: order_repository
+description: Dart package which manages cart.
+publish_to: none
+
+environment:
+  sdk: ^3.5.2
+dependencies:
+  equatable: ^2.0.0
+  http: ^1.3.0

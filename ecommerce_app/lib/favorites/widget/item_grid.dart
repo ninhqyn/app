@@ -1,13 +1,17 @@
 import 'package:ecommerce_app/favorites/widget/card_add_favorites.dart';
+import 'package:ecommerce_app/shop/models/product_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 class CardGrid extends StatelessWidget {
-  const CardGrid({super.key});
-
-
-
+  const CardGrid({super.key, required this.productModel, required this.onTap});
+  final VoidCallback onTap;
+  final ProductModel productModel;
   @override
   Widget build(BuildContext context) {
+
+    final String imageUrl = productModel.productImages.isNotEmpty
+        ? productModel.productImages[0].imageUrl
+        : 'https://via.placeholder.com/150';
     return SizedBox(
       height: 300,
       width: 150,
@@ -22,17 +26,32 @@ class CardGrid extends StatelessWidget {
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(12),
-                    child: Image.asset(
-                      'assets/images/image1.png',
+                    child: productModel.productImages.isNotEmpty
+                        ? Image.network(
+                      imageUrl,
+                      width: double.infinity,
+                      fit: BoxFit.fill,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Image.asset(
+                          'assets/images/image1.png',  // Đường dẫn đến hình ảnh trong assets
+                          width: double.infinity,
+                          fit: BoxFit.fill,
+                        );
+                      },
+                    )
+                        : Image.asset(
+                      'assets/images/image2.png',  // Hình ảnh mặc định nếu không có hình ảnh trong danh sách
                       width: double.infinity,
                       fit: BoxFit.fill,
                     ),
                   ),
                   // Badge "New"
-                  const Positioned(
-                    top: 4,
-                    right: 4,
-                    child: Icon(Icons.cancel)
+                  Positioned(
+                    top: 0,
+                    right: 2,
+                    child: InkWell(
+                        onTap: onTap
+                        ,child: SvgPicture.asset('assets/images/cancel.svg'))
                   ),
                   Positioned(
                     top: 4,
@@ -43,7 +62,7 @@ class CardGrid extends StatelessWidget {
                         color: Colors.red,
                         borderRadius: BorderRadius.circular(29),
                       ),
-                      child: const Text('-30\%',style: TextStyle(color: Colors.white),),
+                      child: const Text('-30%',style: TextStyle(color: Colors.white),),
                     ),
                   ),
                   Positioned(
@@ -66,9 +85,11 @@ class CardGrid extends StatelessWidget {
                       ),
                       child: InkWell(
                         onTap: (){
-                          showModalBottomSheet(context: context,builder: (_){
-                            return const CardAddFavorites();
-                          });
+                          showModalBottomSheet(
+                              context: context,
+                              builder:(context){
+                                return CardAddFavorites();
+                              });
                         },
                         child: Container(
                           width: 36,
@@ -78,7 +99,7 @@ class CardGrid extends StatelessWidget {
                               color: Colors.red,
                               shape: BoxShape.circle
                           ),
-                          child: Center(child: SvgPicture.asset('assets/images/bag.svg',color: Colors.white,)),
+                          child: Center(child: SvgPicture.asset('assets/images/add_to_cart.svg',color: Colors.white,)),
                         ),
                       ),
                     ),
@@ -97,77 +118,72 @@ class CardGrid extends StatelessWidget {
                   children: [
                     // Rating stars
                     Row(
-                      children: List.generate(
-                        5,
-                            (index) => Icon(
-                          Icons.star,
-                          size: 16,
-                          color: index < 4 ? Colors.amber : Colors.grey,
+                      children: [
+                        // Hiển thị sao dựa trên trường rating
+                        ...List.generate(
+                          5,
+                              (index) => Icon(
+                            Icons.star,
+                            size: 16,
+                            color: index < productModel.product.rating ? Colors.amber : Colors.grey,
+                          ),
                         ),
-                      ),
+                        const SizedBox(width: 4),
+                        // Hiển thị tổng số đánh giá
+                        Text(
+                          '(${productModel.product.totalSold > 99 ? '99+' : productModel.product.totalSold})',
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ],
                     ),
                     // Brand name
-                    const Text(
-                      'Brand Name',
-                      style: TextStyle(
+                    Text(
+                      productModel.product.brand,
+                      style: const TextStyle(
                         color: Colors.grey,
                         fontSize: 12,
                       ),
                     ),
                     // Product name (Sử dụng TextOverflow.ellipsis và maxLines để giới hạn độ dài)
-                    const Text(
-                      'Product Name',
-                      style: TextStyle(
+                    Text(
+                      productModel.product.name,
+                      style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 14,
                       ),
                       maxLines: 1, // Giới hạn chỉ hiển thị 1 dòng
                       overflow: TextOverflow.ellipsis, // Hiển thị dấu "..."
                     ),
-                    const Row(
-                      children: [
-                        Text('Color: ',style: TextStyle(
-                            color: Colors.grey,
-                            fontSize: 11
-                        ),),
-                        Text('Blue',style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.bold
-                        ),),
-                        SizedBox(width: 20,),
-                        Text('Color:',style: TextStyle(
-                            color: Colors.grey,
-                            fontSize: 11
-                        ),),
-                        Text('Blue',style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.bold
-                        ),),
-
-                      ],
-                    ),
                     // Price
-                    const Row(
-                      children: [
-                        Text(
-                          '\$99.99',
-                          style: TextStyle(
+                    Text.rich(
+                      TextSpan(
+                        children: [
+                          TextSpan(
+                            text: '${productModel.product.basePrice}d',  // Giá cũ
+                            style: const TextStyle(
                               color: Colors.grey,
                               fontWeight: FontWeight.bold,
-                              fontSize: 14,
-                              fontStyle: FontStyle.italic
+                              fontSize: 11,
+                              fontStyle: FontStyle.italic,
+
+                            ),
                           ),
-                        ),
-                        SizedBox(width: 5,),
-                        Text(
-                          '\$99.99',
-                          style: TextStyle(
-                            color: Colors.red,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
+                          const TextSpan(
+                            text: '   ', // Khoảng cách giữa giá cũ và giá mới
                           ),
-                        ),
-                      ],
+                          TextSpan(
+                            text: '${productModel.product.basePrice}d', // Giá mới
+                            style: const TextStyle(
+                              color: Colors.red, // Màu giá mới
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),

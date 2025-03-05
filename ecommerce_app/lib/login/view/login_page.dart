@@ -1,6 +1,7 @@
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:ecommerce_app/forgotpassword/view/forgot_password.dart';
 import 'package:ecommerce_app/login/bloc/login_bloc.dart';
+import 'package:ecommerce_app/shop/bloc/shop_bloc.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -19,17 +20,17 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BlocProvider(
-        create: (context) => LoginBloc(authenticationRepository:
-        context.read<AuthenticationRepository>()),
-        child: BlocConsumer<LoginBloc, LoginState>(
-  listener: (context, state) {
-    if (state.status == LoginStatus.success && state.isValid) {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => const MyHomePage()),
-      );
-    }
-  },
+        body: BlocProvider(
+          create: (context) => LoginBloc(authenticationRepository:
+          context.read<AuthenticationRepository>()),
+          child: BlocConsumer<LoginBloc, LoginState>(
+            listener: (context, state) {
+              if (state.status == LoginStatus.success && state.isValid) {
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(builder: (_) => const MyHomePage()),
+                );
+              }
+            },
   builder: (context, state) {
     return Stack(
       children: [
@@ -117,6 +118,14 @@ class _MyFormState extends State<_MyForm> {
               const SizedBox(height: 16),
               const _PasswordInput(),
               const SizedBox(height: 16),
+              BlocBuilder<LoginBloc, LoginState>(
+                builder: (context, state) {
+                  if(state.errorMessage == ''){
+                    return Container();
+                  }
+                  return _AuthenticationStatus(state.errorMessage);
+                },
+              ),
               InkWell(
                 onTap: (){
                   Navigator.push(context, MaterialPageRoute(builder: (context) => const ForgotPassword()));
@@ -131,6 +140,7 @@ class _MyFormState extends State<_MyForm> {
                   ],
                 ),
               ),
+              
               const LoginButton(),
 
               const SizedBox(height: 16),
@@ -140,7 +150,21 @@ class _MyFormState extends State<_MyForm> {
   }
 
 }
+class _AuthenticationStatus extends StatelessWidget{
+  final String status;
 
+  const _AuthenticationStatus(this.status);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text(status,style: const TextStyle(
+        fontSize: 16,
+        color: Colors.red
+      ),),
+    );
+  }
+}
 class _PasswordInput  extends StatelessWidget{
   const _PasswordInput();
 

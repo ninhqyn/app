@@ -7,6 +7,7 @@ class RoutesName {
   static const String addShippingAddressPage = '/add_shipping_address_page';
   static const String shippingAddressPage = '/shipping_address_page';
   static const String orderSuccessPage = '/order_success_page';
+  static const String splashPage = '/splash_page';
 
 
 

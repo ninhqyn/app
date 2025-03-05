@@ -53,9 +53,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       return 'Mật khẩu không được để trống';
     }
 
-    if (password.length < 6) {
-      return 'Mật khẩu phải có ít nhất 6 ký tự';
-    }
+    // if (password.length < 6) {
+    //   return 'Mật khẩu phải có ít nhất 6 ký tự';
+    // }
 
     return '';
   }
@@ -67,7 +67,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         isValid: _errorPassword(password).isEmpty && _errorEmail(state.email).isEmpty
     ));
   }
-  void _onLoginSubmitted(LoginSubmitted event,Emitter<LoginState> emit) async{
+  void _onLoginSubmitted(LoginSubmitted event, Emitter<LoginState> emit) async {
     final emailError = _errorEmail(state.email);
     final passwordError = _errorPassword(state.password);
 
@@ -80,19 +80,36 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       ));
       return;
     }
+
     emit(state.copyWith(status: LoginStatus.inProgress));
-    await Future.delayed(const Duration(seconds: 2));
+
     try {
-      emit(state.copyWith(status: LoginStatus.success));
-      await _authenticationRepository.logIn(
-        username: state.email,
-        password: state.password,
+      // You're missing the 'await' keyword here
+      final status = await _authenticationRepository.signIn(
+          email: state.email,
+          password: state.password
       );
-    } catch (_) {
-      emit(state.copyWith(status: LoginStatus.failure));
+      print(status);
+      if (status == AuthenticationStatus.authenticated) {
+        emit(state.copyWith(status: LoginStatus.success));
+      } else if (status == AuthenticationStatus.unauthenticated) {
+        emit(state.copyWith(
+            status: LoginStatus.failure,
+            errorMessage: 'An error occurred'
+        ));
+      } else {
+        emit(state.copyWith(
+            status: LoginStatus.failure,
+            errorMessage: 'An error occurred'
+        ));
+      }
+    } catch (error) {
+      print('Login error: $error');
+      emit(state.copyWith(
+          status: LoginStatus.failure,
+          errorMessage: 'An unexpected error occurred'
+      ));
     }
-
-
   }
   void _onObscurePassword(ObscurePassword event, Emitter<LoginState> emit) {
     final currentValue = state.obscurePassword;

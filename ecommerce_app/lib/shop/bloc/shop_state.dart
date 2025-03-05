@@ -7,8 +7,6 @@ sealed class ShopState extends Equatable {
 
   ShopState({List<ShopState>? navigationStack})
       : navigationStack = navigationStack ?? [];
-
-  // Method để cập nhật navigation stack cho mỗi state
   ShopState copyWithStack(List<ShopState> stack) {
     throw UnimplementedError();
   }
@@ -38,10 +36,12 @@ class LoadingState extends ShopState {
 }
 
 class CategoriesLoadedState extends ShopState {
+  final List<Category> categoriesParent;
   final List<Category> categories;
   final int tabIndex;
 
   CategoriesLoadedState({
+    required this.categoriesParent,
     required this.categories,
     this.tabIndex = 0,
     List<ShopState>? navigationStack,
@@ -50,6 +50,7 @@ class CategoriesLoadedState extends ShopState {
   @override
   CategoriesLoadedState copyWithStack(List<ShopState> stack) {
     return CategoriesLoadedState(
+      categoriesParent: categoriesParent,
       categories: categories,
       tabIndex: tabIndex,
       navigationStack: stack,
@@ -57,11 +58,13 @@ class CategoriesLoadedState extends ShopState {
   }
 
   CategoriesLoadedState copyWith({
+    List<Category>? categoriesParent,
     List<Category>? categories,
     int? tabIndex,
     List<ShopState>? navigationStack,
   }) {
     return CategoriesLoadedState(
+      categoriesParent: categoriesParent ?? this.categoriesParent,
       categories: categories ?? this.categories,
       tabIndex: tabIndex ?? this.tabIndex,
       navigationStack: navigationStack ?? this.navigationStack,
@@ -69,11 +72,11 @@ class CategoriesLoadedState extends ShopState {
   }
 
   @override
-  List<Object?> get props => [categories, tabIndex, navigationStack];
+  List<Object?> get props => [categories, tabIndex, navigationStack,categoriesParent];
 }
 
 class ProductTypeLoadedState extends ShopState {
-  final String categoryId;
+  final int categoryId;
   final List<ProductType> productTypes;
 
   ProductTypeLoadedState(
@@ -96,30 +99,34 @@ class ProductTypeLoadedState extends ShopState {
 }
 
 class ProductLoadedState extends ShopState {
-  final String productTypeId;
-  final List<Product> products;
-  final List<Product> filterProducts;
+  final ProductType productType;
+  final List<ProductType> productTypes;
+  final List<ProductModel> filterProducts;
+  final List<ProductModel> productModels;
   final ModelType modelType;
   final SortType sortType;
-  final FilterModel? filter;
+  final FilterModel filter;
 
   // Constructor
   ProductLoadedState({
-    required this.productTypeId,
-    required this.products,
+    required this.productType,
+    required this.productTypes,
+    required this.productModels,
     this.modelType = ModelType.list,
-    this.sortType = SortType.newest,
-    this.filter,
+    this.sortType = SortType.lowToHigh,
+    this.filter = const FilterModel.empty(),
     List<ShopState>? navigationStack,  // Named parameter for navigationStack
-  }) : filterProducts = _filterProducts(products, filter)
+  }) : filterProducts = _filterProducts(productModels, filter)
    ,super(navigationStack: navigationStack ?? []);  // Use empty list if null
-  static List<Product> _filterProducts(List<Product> products, FilterModel? filter) {
-     List<Product> list = [];
+  static List<ProductModel> _filterProducts(List<ProductModel> products, FilterModel? filter) {
+     List<ProductModel> list = [];
      return list;
   }
   ProductLoadedState copyWith({
-    String? productTypeId,
+    ProductType? productType,
     List<Product>? products,
+    List<ProductType>? productTypes,
+    List<ProductModel>? productModels,
     ModelType? modelType,
     SortType? sortType,
     FilterModel? filter,
@@ -127,8 +134,9 @@ class ProductLoadedState extends ShopState {
     bool? navigatorBrand
   }) {
     return ProductLoadedState(
-      productTypeId: productTypeId ?? this.productTypeId,
-      products: products ?? this.products,
+      productType: productType ?? this.productType,
+      productTypes: productTypes ?? this.productTypes,
+      productModels: productModels ?? this.productModels,
       modelType: modelType ?? this.modelType,
       sortType: sortType ?? this.sortType,
       navigationStack: navigationStack,
@@ -148,6 +156,6 @@ class ProductLoadedState extends ShopState {
 
 
   @override
-  List<Object?> get props => [productTypeId, products, navigationStack,modelType,sortType,filter];
+  List<Object?> get props => [productType, navigationStack,modelType,sortType,filter,productTypes,productModels];
 
 }

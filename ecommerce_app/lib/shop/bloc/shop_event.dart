@@ -6,18 +6,19 @@ class LoadCategoriesEvent extends ShopEvent{
 }
 class TabChanged extends ShopEvent{
   final int tabIndex;
-
-  TabChanged(this.tabIndex);
+  final int categoryId;
+  TabChanged(this.tabIndex, this.categoryId);
 }
 class SelectCategoriesEvent extends ShopEvent{
-  final String categoryId;
+  final int categoryId;
 
   SelectCategoriesEvent(this.categoryId);
 }
 class SelectProductTypeEvent extends ShopEvent{
-  final String productTypeId;
+  final ProductType productType;
+  final int categoryId;
 
-  SelectProductTypeEvent(this.productTypeId);
+  SelectProductTypeEvent(this.productType,this.categoryId);
 }
 class NavigateBackEvent extends ShopEvent {}
 
@@ -37,4 +38,9 @@ final class FilterChanged extends ShopEvent{
   final FilterModel filterModel;
 
   FilterChanged(this.filterModel);
+}
+final class SelectProductTypeInList extends ShopEvent{
+  final ProductType productType;
+
+  SelectProductTypeInList(this.productType);
 }

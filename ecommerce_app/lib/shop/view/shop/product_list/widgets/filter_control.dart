@@ -35,8 +35,8 @@ class FilterControl extends StatelessWidget {
                 MaterialPageRoute(
                   builder: (context) {
                     return BlocProvider.value(
-                      value: shopBloc,  // Truyền ShopBloc đã có sẵn
-                      child: const FilterPage(page: RoutesName.shopPages,),
+                      value: shopBloc,
+                      child: const FilterPage(page: RoutesName.shopPages,key:ValueKey('FilterPage')),
                     );
                   },
                 ),
@@ -114,19 +114,24 @@ class FilterControl extends StatelessWidget {
           ),
           BlocBuilder<ShopBloc, ShopState>(
             builder: (context, state) {
-              state as ProductLoadedState;
-              final currentType = state.modelType;
-              return InkWell(
-                onTap: () {
-                    final newType = currentType == ModelType.grid ? ModelType.list : ModelType.grid;
-                    context.read<ShopBloc>().add(ModelChanged(newType));
-                  },
+              if(state is ProductLoadedState){
+                final currentType = state.modelType;
+                return InkWell(
+                    onTap: () {
+                      final newType = currentType == ModelType.grid ? ModelType.list : ModelType.grid;
+                      context.read<ShopBloc>().add(ModelChanged(newType));
+                    },
                     child:  SvgPicture.asset(
                       currentType == ModelType.list
                           ? 'assets/images/grid_mode.svg' // Icon grid để chuyển sang dạng grid
                           : 'assets/images/list_mode.svg', // Icon list để chuyển sang dạng list
                     )
+                );
+              }
+              return const Center(
+                child: CircularProgressIndicator(),
               );
+
             },
           )
 

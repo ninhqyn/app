@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-class ItemList extends StatelessWidget{
-  const ItemList({super.key});
 
+import '../../shop/models/product_model.dart';
+class ItemList extends StatelessWidget{
+  const ItemList({super.key, required this.onTap, required this.item});
+  final VoidCallback onTap;
+  final ProductModel item;
   @override
   Widget build(BuildContext context) {
+    final String imageUrl = item.productImages.isNotEmpty
+        ? item.productImages[0].imageUrl
+        : 'https://via.placeholder.com/150';
    return Container(
      decoration: BoxDecoration(
        color: Colors.white,
@@ -28,7 +34,24 @@ class ItemList extends StatelessWidget{
              Expanded(
                child: ClipRRect(
                  borderRadius: const BorderRadius.only(topLeft: Radius.circular(8),bottomLeft: Radius.circular(8)),
-                 child: Image.asset('assets/images/banner1.png',fit: BoxFit.fill,),
+                 child: item.productImages.isNotEmpty
+                     ? Image.network(
+                   imageUrl,
+                   width: double.infinity,
+                   fit: BoxFit.fill,
+                   errorBuilder: (context, error, stackTrace) {
+                     return Image.asset(
+                       'assets/images/image1.png',  // Đường dẫn đến hình ảnh trong assets
+                       width: double.infinity,
+                       fit: BoxFit.fill,
+                     );
+                   },
+                 )
+                     : Image.asset(
+                   'assets/images/image2.png',  // Hình ảnh mặc định nếu không có hình ảnh trong danh sách
+                   width: double.infinity,
+                   fit: BoxFit.fill,
+                 ),
                ),
              ),
             Expanded(
@@ -38,56 +61,54 @@ class ItemList extends StatelessWidget{
                  child: Column(
                    crossAxisAlignment: CrossAxisAlignment.start,
                    children: [
-                     const Row(
+                     Row(
                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                        children: [
-                         Text('LIME',style: TextStyle(
+                         Text(item.product.brand,style: const TextStyle(
                            color: Colors.grey,
-                           fontSize: 11
+                           fontSize: 12
                          ),
                          ),
-                         Icon(Icons.cancel)
+                         InkWell(
+                           onTap: onTap,
+                           child: SvgPicture.asset(
+                             'assets/images/cancel.svg',width: 30,
+                           ),
+                         )
                        ],
                      ),
-                     const Text('Shirt',style: TextStyle(
+                     Text(item.product.name,style: const TextStyle(
                        fontSize: 16,
                        fontWeight: FontWeight.bold
                      ),),
-                     const Row(
-                       children: [
-                         Text('Color: ',style: TextStyle(
-                           color: Colors.grey,
-                           fontSize: 11
-                         ),),
-                         Text('Blue',style: TextStyle(
-                           fontSize: 11,
-                           fontWeight: FontWeight.bold
-                         ),),
-                         SizedBox(width: 20,),
-                         Text('Color:',style: TextStyle(
-                             color: Colors.grey,
-                             fontSize: 11
-                         ),),
-                         Text('Blue',style: TextStyle(
-                             fontSize: 11,
+                     Text(item.product.basePrice.toString(),
+                         style: const TextStyle(
+                             fontSize: 12,
                              fontWeight: FontWeight.bold
-                         ),),
-
-                       ],
+                         )
                      ),
                      Row(
                        children: [
-                         const Text('32\$',style: TextStyle(
-                           fontSize: 14,
-                           fontWeight: FontWeight.bold
-                         ),),
-                         Row(
-                           children: List.generate(5, (index){
-                             return const Icon(Icons.star,color: Colors.yellow,);
-                           }),
-                         )
+                         // Hiển thị sao dựa trên trường rating
+                         ...List.generate(
+                           5,
+                               (index) => Icon(
+                             Icons.star,
+                             size: 16,
+                             color: index < item.product.rating ? Colors.amber : Colors.grey,
+                           ),
+                         ),
+                         const SizedBox(width: 4),
+                         // Hiển thị tổng số đánh giá
+                         Text(
+                           '(${item.product.totalSold > 99 ? '99+' : item.product.totalSold})',
+                           style: const TextStyle(
+                             fontSize: 12,
+                             color: Colors.grey,
+                           ),
+                         ),
                        ],
-                     )
+                     ),
                    ],
                  ),
                ),)

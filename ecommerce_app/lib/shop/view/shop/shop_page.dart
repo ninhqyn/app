@@ -1,3 +1,4 @@
+import 'package:category_repository/category_repository.dart';
 import 'package:ecommerce_app/shop/bloc/shop_bloc.dart';
 import 'package:ecommerce_app/shop/view/shop/categories/view/categories_page.dart';
 import 'package:ecommerce_app/shop/view/shop/product_list/product_list_page.dart';
@@ -5,6 +6,8 @@ import 'package:ecommerce_app/shop/view/shop/product_type/product_type_page.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:product_repository/product_repository.dart';
+import 'package:product_type_repository/product_type_repository.dart';
 
 class ShopPage extends StatelessWidget {
   const ShopPage({super.key});
@@ -13,7 +16,10 @@ class ShopPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider<ShopBloc>(
       create: (context) =>
-      ShopBloc()
+      ShopBloc(
+          context.read<CategoryRepository>(),
+          context.read<ProductTypeRepository>(),
+          context.read<ProductRepository>())
         ..add(LoadCategoriesEvent()),
       child: Builder(
         builder: (context) {
@@ -36,21 +42,42 @@ class ShopView extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const _MyAppBar(),
+        // BlocBuilder<ShopBloc, ShopState>(
+        //     builder: (context, state) {
+        //       if (state is CategoriesLoadedState) {
+        //         print(state.categories[0].name);
+        //         return const Expanded(child: CategoriesPage());
+        //       } else if (state is ProductTypeLoadedState) {
+        //         return const Expanded(child: ProductTypePage());
+        //       }
+        //       else if (state is ProductLoadedState) {
+        //         return const Expanded(child: ProductListPage());
+        //       } else {
+        //         return const Expanded(
+        //             child: Center(child: CircularProgressIndicator()));
+        //       }
+        //     }),
         BlocBuilder<ShopBloc, ShopState>(
             builder: (context, state) {
+              int selectedIndex = 0; // Mặc định là trang đầu tiên (Categories)
               if (state is CategoriesLoadedState) {
-                print(state.categories[0].name);
-                return const Expanded(child: CategoriesPage());
+                selectedIndex = 0; // Chọn trang Categories
               } else if (state is ProductTypeLoadedState) {
-                return const Expanded(child: ProductTypePage());
+                selectedIndex = 1; // Chọn trang Product Type
+              } else if (state is ProductLoadedState) {
+                selectedIndex = 2; // Chọn trang Product List
               }
-              else if (state is ProductLoadedState) {
-                return const Expanded(child: ProductListPage());
-              } else {
-                return const Expanded(
-                    child: Center(child: CircularProgressIndicator()));
-              }
-            }),
+              return Expanded(
+                child: IndexedStack(
+                  index: selectedIndex,  // Dùng index để chọn trang hiện tại
+                  children: const [
+                    CategoriesPage(),   // Trang Categories
+                    ProductTypePage(),  // Trang Product Type
+                    ProductListPage(),  // Trang Product List
+                  ],
+                ),
+              );})
+
       ],
     );
   }
@@ -83,7 +110,7 @@ class _MyAppBar extends StatelessWidget {
             },
             child: BlocBuilder<ShopBloc, ShopState>(
               builder: (context, state) {
-                if(state is CategoriesLoadedState){
+                if (state is CategoriesLoadedState) {
                   return Container();
                 }
                 return SvgPicture.asset(
@@ -97,7 +124,19 @@ class _MyAppBar extends StatelessWidget {
           BlocBuilder<ShopBloc, ShopState>(
             builder: (context, state) {
               if (state is ProductLoadedState) {
-                return Container();
+                if(state.modelType == ModelType.list){
+                  return Container();
+                }else{
+                  return Text(
+                    state.productType.name,
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                    ),
+                  );
+                }
+
               }
               return const Text(
                 'Categories',

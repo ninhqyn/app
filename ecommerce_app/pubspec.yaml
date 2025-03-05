@@ -32,6 +32,28 @@ dependencies:
     path: packages/authentication_repository
   user_repository:
     path: packages/user_repository
+  product_repository:
+    path: packages/product_repository
+  product_api:
+    path: packages/product_api
+  category_repository:
+    path: packages/category_repository
+  product_type_repository:
+    path: packages/product_type_repository
+  color_repository:
+    path: packages/color_repository
+  size_repository:
+    path: packages/size_repository
+  favorite_repository:
+    path: packages/favorite_repository
+  cart_repository:
+    path: packages/cart_repository
+  vn_repository:
+    path: packages/vn_repository
+  address_repository:
+    path: packages/address_repository
+  order_repository:
+    path: packages/order_repository
   flutter:
     sdk: flutter
 
@@ -55,6 +77,7 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^4.0.0
   flutter_svg: ^2.0.17
+  shared_preferences: ^2.0.15
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
