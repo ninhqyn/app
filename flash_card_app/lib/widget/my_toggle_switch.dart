@@ -1,10 +1,13 @@
+
+import 'package:flash_card_app/features/new_flash_card/bloc/new_flash_card/new_flash_card_bloc.dart';
+import 'package:flash_card_app/features/video_play/bloc/video_play_bloc.dart';
+import 'package:flash_card_app/page/form_flash_card/form_flash_card.dart';
 import 'package:flutter/material.dart';
 import 'package:toggle_switch/toggle_switch.dart';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
 class MyToggleSwitch extends StatefulWidget{
 
   int labelIndex;
-
 
   MyToggleSwitch(this.labelIndex, {super.key});
 
@@ -29,7 +32,7 @@ class _MyToggleSwitchState extends State<MyToggleSwitch> {
       //inactiveFgColor: Colors.white,
       radiusStyle: true,
       totalSwitches: 2,
-      labels: ['Font', 'Back'],
+      labels: const ['Font', 'Back'],
       //icons: [FontAwesomeIcons.mars, FontAwesomeIcons.venus],
       activeBgColors: const [[Color(0xFFC9FA85)],[Color(0xFFC9FA85)]],
       customTextStyles:[
@@ -66,10 +69,9 @@ class _MyToggleSwitchState extends State<MyToggleSwitch> {
       ],
       onToggle: (index) {
         setState(() {
-          widget.labelIndex = index!;
+          context.read<NewFlashCardBloc>().add(ToggleSelected(index!));
+          context.read<VideoPlayBloc>().add(PauseVideo());
         });
-
-        print('switched to: $index');
       },
     );
   }
